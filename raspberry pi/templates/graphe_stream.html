@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Graphe</title>
+<!--You should download those script in local-->
+	<script src="static/jquery-1.9.1.min.js" ></script>
+	<script src="static/moment.min.js"></script>
+	<script src="static/chart.js"></script>
+	<script src="static/chartjs-plugin-streaming.js"></script>
+	<script src="static/axios.min.js"></script>
+
+
+
+</head>
+<body>
+
+	<canvas id="chart" ></canvas>
+
+	<script type="text/javascript">
+		
+var tempDataset = [];
+
+var ctx = document.getElementById('chart').getContext('2d');
+
+var chart = new Chart(ctx, {
+
+  type: 'line',
+
+  data: {
+    datasets: [
+    	{ 	label: 'Temperature',
+      		borderColor: 'rgb(50,205,50)',
+      		backgroundColor: 'rgba(0, 0, 0, 0)',
+      		lineTension: 0,
+		fill: false,
+		borderDash: [8, 4],
+      		data:tempDataset,
+    	}  
+    ]
+  },
+
+  options: {
+
+	title: {
+            display: true,
+            text: 'Fermentations Temperature',
+	    fontSize: 34,
+            fontFamily: 'Arial',
+            fontStyle: 'bold',
+            position: 'top'
+       		},
+
+	legend: {
+            display: true,
+            labels: {
+        	    }
+		},
+
+    	scales: {
+
+      			xAxes: [{
+        			type: 'realtime',
+				display: true,
+				scaleLabel: {
+					display: true,
+					labelString: 'time [-]',
+					fontStyle:'bold'
+					},
+        			realtime: {
+          				onRefresh: function(chart) {
+          					getData();
+            			}
+          			}      
+      			}],
+
+			yAxes: [{
+				type: 'linear',
+				display: true,
+				scaleLabel: {
+					display: true,
+					labelString: 'Température [°C]',
+					fontStyle: 'bold'
+				}
+			}]
+
+    	}
+
+  	}
+});
+
+
+	function getData() {
+		console.log("test")
+		axios.get('http://192.168.4.1:5000/mqtt')
+		
+		.then(function (response) {
+			console.log("test")
+			tempDataset.push({
+				x:response.data.timestamp,
+				y:response.data.water_temperature
+			});
+		});
+
+	}
+
+
+	</script>
+
+
+</body>
+</html>

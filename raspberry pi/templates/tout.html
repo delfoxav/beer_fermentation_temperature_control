@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Graphe</title>
+        <script src="static/jquery-1.9.1.min.js" ></script>
+	<script src="static/moment.min.js"></script>
+	<script src="static/chart.js"></script>
+	<script src="static/chartjs-plugin-streaming.js"></script>
+	<script src="static/axios.js"></script>
+
+
+</head>
+<body>
+	<div class="chart-container" style=" width: 100%; height: 250px">
+   		 <canvas id="chart"></canvas>
+	</div>
+	
+	  <div class="chart-container" style=" width:100%; height: 250px">
+                 <canvas id="chart2"></canvas>
+        </div>
+	
+	  <div class="chart-container" style="width: 100%; height: 250px" >
+                 <canvas id="chart3"></canvas>
+        </div>
+	<script type="text/javascript">
+		
+var tempDataset = [];
+var turbDataset = [];
+var pHDataset = [];
+
+
+var chart1_ctx = document.getElementById('chart').getContext('2d');
+var chart2_ctx = document.getElementById('chart2').getContext('2d');
+var chart3_ctx = document.getElementById('chart3').getContext('2d');
+
+var chart1 = new Chart(chart1_ctx, {
+
+  type: 'line',
+
+  data: {
+    datasets: [
+    	{ 	label: 'Temperature',
+      		borderColor: 'rgb(50,205,50)',
+      		backgroundColor: 'rgba(0, 0, 0, 0)',
+      		lineTension: 0,
+		fill: false,
+		borderDash: [8, 4],
+      		data:tempDataset,
+    	}  
+    ]
+  },
+
+  options: {
+
+	title: {
+            display: false,
+            text: 'Fermentations Temperature',
+	    fontSize: 30,
+            fontFamily: 'Arial',
+            fontStyle: 'bold',
+            position: 'top'
+       		},
+	maintainAspectRatio: false,
+
+	legend: {
+            display: true,
+            labels: {
+        	    }
+		},
+
+    	scales: {
+
+      			xAxes: [{
+        			type: 'realtime',
+				display: true,
+				scaleLabel: {
+					display: false,
+					labelString: 'time [-]',
+					fontStyle:'bold'
+					},
+        			realtime: {
+          				onRefresh: function(chart) {
+          				
+            			}
+          			}      
+      			}],
+
+			yAxes: [{
+				type: 'linear',
+				display: true,
+				scaleLabel: {
+					display: true,
+					labelString: 'Température [°C]',
+					fontStyle: 'bold'
+				}
+			}]
+
+    	}
+
+  	}
+});
+
+var chart2 = new Chart(chart2_ctx, {
+
+  type: 'line',
+
+  data: {
+    datasets: [
+        {       label: 'Turbidity',
+                borderColor: 'rgb(63,63,191)',
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+                lineTension: 0,
+                fill: false,
+                borderDash: [8, 4],
+                data:turbDataset,
+        }
+    ]
+  },
+
+  options: {
+
+         title: {
+            display: false,
+            text: 'Fermentations Turbidity',
+            fontSize: 30,
+            fontFamily: 'Arial',
+            fontStyle: 'bold',
+            position: 'top'
+                },
+
+	    maintainAspectRatio: false,
+
+        scales: {
+
+                        xAxes: [{
+				 type: 'realtime',
+                                display: true,
+                                scaleLabel: {
+                                        display: false,
+                                        labelString: 'time [-]',
+                                        fontStyle:'bold'
+                                        },
+
+                                realtime: {
+                                        onRefresh: function(chart) {
+					getData()
+                                                
+                                }
+                                }
+                        }],
+
+                          yAxes: [{ type: 'linear',
+                                display: true,
+                                scaleLabel: {
+                                        display: true,
+                                        labelString: 'Turbidity [ntu]',
+                                        fontStyle: 'bold'
+                                }
+                        }]
+
+
+        }
+
+        }
+});
+
+var chart3 = new Chart(chart3_ctx, {
+
+  type: 'line',
+
+  data: {
+    datasets: [
+        {       label: 'pH',
+                borderColor: 'rgb(220,20,60)',
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+                fill: false,
+                lineTension: 0,
+                borderDash: [8, 4],
+                data:pHDataset,
+        }
+    ]
+  },
+
+  options: {
+
+        title: {
+            display: false,
+            text: 'Fermentations pH',
+            fontSize: 30,
+            fontFamily: 'Arial',
+            fontStyle: 'bold',
+            position: 'top'
+                },
+
+	 maintainAspectRatio: false,
+
+        scales: {
+
+                        xAxes: [{
+			type: 'realtime',
+                                display: true,
+                                scaleLabel: {
+                                        display: false,
+                                        labelString: 'time [-]',
+                                        fontStyle:'bold'
+                                        },
+
+                                realtime: {
+                                        onRefresh: function(chart) {
+                                               
+                                }
+                                }
+                        }],
+
+                          yAxes: [{
+                                type: 'linear',
+                                display: true,
+                                scaleLabel: {
+                                        display: true,
+                                        labelString: 'pH [-]',
+                                        fontStyle: 'bold'
+                                }
+                        }]
+
+
+        }
+
+        }
+});
+
+
+	function getData() {
+		axios.get('192.168.4.1/mqtt')
+		.then(function (response) {
+			tempDataset.push({
+				x:response.data.timestamp,
+				y:response.data.temperature_fridge
+			});
+			pHDataset.push({
+                                x:response.data.timestamp,
+                                y:response.data.temperature_fridge
+                        });
+			turbDataset.push({
+                                x:response.data.timestamp,
+                                y:response.data.turbidity 
+                        });
+
+		});
+
+	}
+
+	
+
+	</script>
+
+
+</body>
+</html>

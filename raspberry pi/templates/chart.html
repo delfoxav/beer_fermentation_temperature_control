@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Charts</title>
+
+<script src="static/jquery-1.9.1.min.js" ></script>
+
+<script type="text/javascript" src="static/moment.js"></script>
+
+
+<script type="text/javascript" src="static/Chart.js"></script>
+
+
+<script src="static/chartjs-plugin-streaming.min.js"></script>
+
+
+<script type="text/javascript">
+
+
+//Canvas creation
+<canvas id="myChart"></canvas>
+
+
+
+var ctx = document.getElementById('myChart').getContext('2d');
+
+var chart = new Chart(ctx, {
+
+  type: 'line',
+
+  data: {
+
+    datasets: [{
+
+      data: []
+
+    }, {
+
+      data: []
+
+    }]
+
+  },
+
+  options: {
+
+    scales: {
+
+      xAxes: [{
+
+        type: 'realtime'
+
+      }]
+
+    }
+
+  }
+
+});
+ </script>
+  </head>
+
+  <body>
+    <!--Div that will hold the pie chart-->
+
+	<h1>Température actuelle</h1>
+    <div id="chart_div"></div>
+  </body>
+</html>
